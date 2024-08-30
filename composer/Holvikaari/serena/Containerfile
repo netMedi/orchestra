@@ -1,0 +1,8 @@
+FROM node:18.20.3-alpine3.20 as BUILD_IMAGE
+
+WORKDIR /app
+
+USER node
+EXPOSE 8080
+
+CMD [ "sh", "-c" ]

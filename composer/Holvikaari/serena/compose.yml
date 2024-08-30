@@ -1,0 +1,13 @@
+# frontend service
+---
+
+services:
+  serena:
+    container_name: kaiku-serena
+    build:
+      context: .
+      dockerfile: ./Containerfile.Holvikaari__serena
+    image: localhost/kaiku-serena:latest
+    # healthcheck:
+    hostname: serena
+    entrypoint: /bin/bash

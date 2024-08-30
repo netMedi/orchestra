@@ -1,0 +1,7 @@
+{ "scripts": {
+  "s:secrets:prepare": "FILE_NAME_BASE=./profiles/.env. secret_tool",
+
+  "s:Holvikaari:db:drop": "PROJECT_PATH='Holvikaari/db'; ${CONTAINER_TOOL:-docker} volume rm db_postgres-data",
+  "s:Holvikaari:db:stop": "PROJECT_PATH='Holvikaari/db'; ${CONTAINER_COMPOSE:-docker compose} -f ./composer/${PROJECT_PATH}/compose.yml down",
+  "s:Holvikaari:db:start": "pnpm s:Holvikaari:db:stop &> /dev/null; PROJECT_PATH='Holvikaari/db'; ENV_FILE_EXTRA=./profiles/${PROJECT_PATH}/.env.${PROFILE:-dev}; [ ! -f \"$ENV_FILE_EXTRA\" ] && ENV_FILE_EXTRA=./profiles/.keep; ENV_FILE=./profiles/.env.${PROFILE:-dev}; dotenvx run -f ./profiles/.env.projects -f $ENV_FILE -f $ENV_FILE_EXTRA -- ${CONTAINER_COMPOSE:-docker compose} -f ./composer/${PROJECT_PATH}/compose.yml up -d"
+}}

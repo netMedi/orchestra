@@ -1,0 +1,40 @@
+---
+
+services:
+  keycloak:
+    container_name: kaiku-keycloak
+    build:
+      context: .
+      dockerfile: docker/Containerfile
+      args:
+        KD_DB: postgres
+        KC_HEALTH_ENABLED: 'true'
+    image: localhost/kaiku-keycloak:latest
+    healthcheck:
+      test: ['CMD', 'curl', '--head','fsS', 'http://localhost:8081/health/ready']
+      interval: 5s
+      timeout: 2s
+      retries: 15
+    hostname: keycloak
+    entrypoint: docker/entrypoint.sh
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      TZ: ${TZ}
+
+      KC_DB_SCHEMA: public
+      KC_DB_USERNAME: ${KC_DB_USERNAME}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+      KC_DB_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}
+
+      KEYCLOAK_LOGLEVEL: DEBUG
+      ROOT_LOGLEVEL: DEBUG
+    ports:
+      - 127.0.0.1:8081:8081
+    volumes:
+      - ${PROJECTS__HOLVIKAARI__PATH}/docker/entrypoint.sh:/docker/entrypoint.sh:${CONTAINER_FILE_PERMISSIONS:-ro}
+
+networks:
+  default:
+    name: kaiku_default
+    driver: bridge

@@ -1,0 +1,26 @@
+---
+
+services:
+  postgres:
+    container_name: kaiku-db
+    healthcheck:
+      test: psql postgres --command "select 1" -U postgres
+    hostname: postgres
+    image: postgres:16.4-alpine3.20
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: '"Kaiku_development_ci","Holvikaari_test","site_settings","keycloak"' # ${CONTAINER_DB__MULTIPLE_DATABASES}
+      POSTGRES_USER: ${CONTAINER_DB__USER}
+      POSTGRES_PASSWORD: ${CONTAINER_DB__PASS}
+    ports:
+      - 127.0.0.1:5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data:cached
+      - ${PROJECTS__HOLVIKAARI__PATH}/script/pg-init-scripts:/docker-entrypoint-initdb.d:${CONTAINER_FILE_PERMISSIONS:-ro}
+
+volumes:
+  postgres-data:
+
+networks:
+  default:
+    name: kaiku_default
+    driver: bridge
